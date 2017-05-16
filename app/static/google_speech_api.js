@@ -9,7 +9,7 @@ if ('webkitSpeechRecognition' in window) {
     recognition.interimResults = false;
 
     recognition.onstart = function() {
-        console.log("Start dictating...");
+	$("#start_button")[0].innerText = "Stop"
         recognizing = true;
     };
 
@@ -19,7 +19,7 @@ if ('webkitSpeechRecognition' in window) {
     };
 
     recognition.onend = function() {
-        console.log("ended");
+	$("#start_button")[0].innerText = "Talk"
         recognizing = false;
     };
 
