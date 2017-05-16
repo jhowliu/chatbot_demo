@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, session
-from app.model import get_result_with_text, id_generator
+from app.model import get_result_with_text, id_generator, get_schedule_with_result
 from app import app
 
 session_id = ""
@@ -29,5 +29,14 @@ def foo():
     json_object = get_result_with_text(raw_text, session_id)
 
     return json_object
+
+@app.route('/get_schedule', method=['POST'])
+def get_schedule():
+    session_id = session['id']
+    json_object = request.form['result']
+    print json_object
+
+    return get_schedule_with_result(json_object, session_id)
+
 
 app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'

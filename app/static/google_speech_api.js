@@ -44,8 +44,9 @@ if ('webkitSpeechRecognition' in window) {
             recognition.stop();
 
             if (response["dialogue_state"] == 'completed') { 
-                $( ".result" ).append(JSON.stringify(response, null, 2));
-                return; 
+		$.post( '/get_schedule', {"result" : response}, function(response) {
+		    console.log(response)
+		})
             }
 
             startDictation(event);
