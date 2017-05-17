@@ -1,10 +1,10 @@
 # -*- coding=utf8 -*-
+import os.path
 import requests, json
 import random, string
 
+schedule_url = "http://122.146.85.107/abc/THRS/thsr.php"
 url = "http://192.168.10.108:3123/dialogue_control"
-
-schedule_url = 'http://122.146.85.107/abc/THRS/thsr.php'
 
 def get_result_with_text(raw_text, session_id):
     payload = {
@@ -19,25 +19,45 @@ def get_result_with_text(raw_text, session_id):
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-def get_schedule_with_result(result, session_id):
+def load_city_codes():
+    city_code = None
+    # relative path
+    file_name = os.path.join(os.path.dirname(__file__), 'static/city_code.json')
 
-    departure_time = result['DepartureTime']
-    departure_city = result['DepartureLocation']
-    arrival_city = result['ArrivalLocation']
-    departure_city_code = city_code[departure_city]
-    arrival_city_code = city_code[arrival_city]
+    if os.path.isfile(file_name):
+        with open(file_name) as f: 
+            city_code = json.load(f)
+
+    return city_code
+
+# loaded once
+city_code = load_city_codes()
+
+def get_schedule_with_data(data, session_id):
+    json_data = json.loads(data)
+    
+    if city_code is None: return None
+
+    print city_code
+
+    departure_time = json_data['DepartureTime']
+    departure_loc = json_data['DepartureLocation']
+    arrival_loc= json_data['ArrivalLocation']
+    departure_loc_code = city_code[departure_loc]
+    arrival_loc_code = city_code[arrival_loc]
 
     payload = {
- 	'date': departure_time
-	'cityCode': departure_city_code
-	'cityCode2': arrival_city_code
-	'trainstation_name': departure_location
-	'trainstation_name2':arrival_location
-
+        'date': departure_time,
+        'cityCode': departure_loc_code,
+        'cityCode2': arrival_loc_code,
+        'trainstation_name': departure_loc,
+        'trainstation_name2':arrival_loc
     }
 
-    response = request.get(schedule_url, params=payload)
+    print payload
 
-    return response.text
+    response = requests.get(schedule_url, params=payload)
 
-city_code = {'台北':'tp', '基隆':'kl', '新北':'nt', '桃園':'tu', '台中':'tc', '新竹':'hn' }
+
+    return response.url
+
