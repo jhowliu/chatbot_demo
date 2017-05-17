@@ -1,6 +1,8 @@
 var final_transcript = '';
 var recognizing = false;
 
+
+
 if ('webkitSpeechRecognition' in window) {
 
     var recognition = new webkitSpeechRecognition();
@@ -44,20 +46,14 @@ if ('webkitSpeechRecognition' in window) {
             recognition.stop();
 
             if (response["dialogue_state"] == 'completed') { 
-                $( ".result" ).append(JSON.stringify(response, null, 2));
-                return; 
+                recognition.stop();
+                get_schedule(response["task"]);
             }
 
             startDictation(event);
 
         })
     };
-}
-
-var two_line = /\n\n/g;
-var one_line = /\n/g;
-function linebreak(s) {
-    return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
 }
 
 function capitalize(s) {
@@ -72,4 +68,11 @@ function startDictation(event) {
     final_transcript = '';
     recognition.lang = 'cmn-Hant-TW';
     recognition.start();
+}
+
+function get_schedule(data) { 
+    $.post( '/get_schedule' , { "data":  JSON.stringify(data) }, function(url) {
+        console.log(url);
+        $( '#schedule_list' ).attr('src', url);
+    });
 }
