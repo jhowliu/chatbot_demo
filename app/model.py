@@ -38,11 +38,12 @@ def get_schedule_with_data(data, session_id):
     
     if city_code is None: return None
 
-    print city_code
-
     departure_time = json_data['DepartureTime']
     departure_loc = json_data['DepartureLocation']
     arrival_loc= json_data['ArrivalLocation']
+    print departure_loc, arrival_loc
+    if departure_loc not in city_code or arrival_loc not in city_code: return None
+
     departure_loc_code = city_code[departure_loc]
     arrival_loc_code = city_code[arrival_loc]
 
@@ -57,6 +58,8 @@ def get_schedule_with_data(data, session_id):
     print payload
 
     response = requests.get(schedule_url, params=payload)
+
+    print response.status_code
 
 
     return response.url

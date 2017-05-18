@@ -35,7 +35,8 @@ def get_schedule():
     session_id = session['id']
     post_data = request.form['data']
     
-    return get_schedule_with_data(post_data, session_id)
+    response = get_schedule_with_data(post_data, session_id)
 
+    return ('None', 200) if response is None else response
 
 app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
