@@ -1,0 +1,24 @@
+.navbar-brand {
+    text-align: center;
+    height: 60px;
+    float: none;
+    font-size: 24px;
+    line-height: 60px;
+    padding: 0px;
+}
+
+.input-group {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+}
+
+.btn-lg {
+    border-color: #ccc;
+    background-color: #fff;
+}
+
+body {
+    overflow: hidden;
+    background: lightblue;
+}
