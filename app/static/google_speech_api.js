@@ -33,7 +33,7 @@ if ('webkitSpeechRecognition' in window) {
 
         final_transcript = capitalize(final_transcript);
 
-	add_string_in_tags("p", "你: " + final_transcript);
+	add_string_in_tags("p", "你說: " + final_transcript);
 
         recognition.stop();
 
@@ -60,12 +60,12 @@ function startDictation(event) {
 function ask_question(raw_text) {
     $.post( '/foo', {"raw_text" : final_transcript}, function(response) {  
 	console.log(response);
-        if (response == null) { add_string_in_tags("p", "妹:  我沒聽清楚，請再說一遍") }
+        if (response == null) { add_string_in_tags("p", "系統:  我沒聽清楚，請再說一遍") }
 
         response = JSON.parse(response);
 
 
-        add_string_in_tags("p", "妹: " + response["dialogueReply"]);
+        add_string_in_tags("p", "系統: " + response["dialogueReply"]);
 
         if (response["dialogue_state"] == 'completed') { 
             get_schedule(response["task"]);
@@ -78,7 +78,7 @@ function ask_question(raw_text) {
 function get_schedule(data) { 
     $.post( '/get_schedule' , { "data":  JSON.stringify(data) }, function(url) {
         console.log(url);
-        if (url == "None") { return add_string_in_tags("p", " 妹:  查無相關資料"); }
+        if (url == "None") { return add_string_in_tags("p", "系統:  查無相關資料"); }
         $( '#schedule_list' ).attr('src', url);
     });
 }
