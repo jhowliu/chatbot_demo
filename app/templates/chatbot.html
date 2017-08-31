@@ -1,0 +1,41 @@
+<!DOCYTYPE html>
+<html>
+    <meta name="viewport" content="width=device-width, initial-scale=0.75, maximum-scale=0.75, user-scalable=no">
+    <head>
+        <title>{{ title }}</title>
+        <script src={{ url_for("static", filename="jquery-1.9.1.min.js") }}></script>
+        <script src={{ url_for("static", filename="utils.js", v="1.0") }}></script>
+        <script src={{ url_for("static", filename="chat.js", v="1.8") }}></script>
+        <script src={{ url_for("static", filename="google_speech_api.js") }}></script>
+
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/bootstrap/bootstrap.min.css') }}"> 
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/chat.css', v='1.1') }}"> 
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/style.css', v='1.4') }}"> 
+    </head>
+
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-brand">LingBot</div>
+            </div>
+        </nav>
+
+        <div class="conversation">
+            <ul class="message-list">
+            </ul>
+        </div>
+
+        <div class="footer">
+            <div class="input-group">
+                <input type="text" id="text-field" class="form-control input-lg" maxLength="50" placeholder="Text input">
+                <div class="input-group-btn">
+                    <button type="button" id="send-button" class="btn btn-lg">Send</button>
+                    <button type="button" id="speak-button" class="btn btn-lg">Speak</button>
+                </div>
+            </div>
+        </div>
+
+    </body>
+
+
+</html>

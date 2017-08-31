@@ -1,8 +1,6 @@
 var final_transcript = '';
 var recognizing = false;
 
-
-
 if ('webkitSpeechRecognition' in window) {
 
     var recognition = new webkitSpeechRecognition();
@@ -10,49 +8,38 @@ if ('webkitSpeechRecognition' in window) {
     recognition.continuous = false;
     recognition.interimResults = false;
 
+    speak_btn = $("#speak-button")[0];
+
     recognition.onstart = function() {
-	$("#start_button")[0].innerText = "Stop"
-        recognizing = true;
+        $("#speak-button")[0].innerText="Stop";
+        recognizing = true; 
     };
 
     recognition.onerror = function(event) {
-        console.log("Dictate error");
-        console.log(event.error);
+        console.log("dictate error, reason: " + event.error);
     };
 
     recognition.onend = function() {
-	$("#start_button")[0].innerText = "Talk"
+        $("#speak-button")[0].innerText="Speak";
         recognizing = false;
     };
 
     recognition.onresult = function(event) {
-        console.log(event)
         var interim_transcript = '';
+
         for (var i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
                 final_transcript += event.results[i][0].transcript;
             }
         }
+
         final_transcript = capitalize(final_transcript);
 
-        $( "p" ).append("<div> 你：" + final_transcript + " </div>");
-        // ajax post
-        $.post( '/foo', {"raw_text" : final_transcript}, function(response) {  
-            response = JSON.parse(response);
-            console.log(response);
-            //$( ".conversations" ).append("<div> bot  says" + response + "</div>")
-            $( "p" ).append("<div> 妹：" + response["dialogueReply"] + " </div>");
+        $("#text-field").val(final_transcript);
 
-            recognition.stop();
+        Chat.do_add_message(final_transcript);
 
-            if (response["dialogue_state"] == 'completed') { 
-                recognition.stop();
-                get_schedule(response["task"]);
-            }
-
-            startDictation(event);
-
-        })
+        recognition.stop();
     };
 }
 
@@ -65,14 +52,37 @@ function startDictation(event) {
         recognition.stop();
         return;
     }
+
     final_transcript = '';
     recognition.lang = 'cmn-Hant-TW';
     recognition.start();
+}
+/*
+function ask_question(raw_text) {
+    $.post( '/foo', {"raw_text" : final_transcript}, function(response) {  
+	console.log(response);
+        if (response == null) { add_string_in_tags("p", "系統:  我沒聽清楚，請再說一遍") }
+
+        response = JSON.parse(response);
+
+
+        add_string_in_tags("p", "系統: " + response["dialogueReply"]);
+
+        if (response["dialogue_state"] == 'completed') { 
+            get_schedule(response["task"]);
+            return recognition.stop();
+        }
+
+        startDictation(event);
+    })
 }
 
 function get_schedule(data) { 
     $.post( '/get_schedule' , { "data":  JSON.stringify(data) }, function(url) {
         console.log(url);
+        if (url == "None") { return add_string_in_tags("p", "系統:  查無相關資料"); }
         $( '#schedule_list' ).attr('src', url);
     });
 }
+
+*/
