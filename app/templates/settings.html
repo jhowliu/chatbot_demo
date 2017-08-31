@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src={{ url_for("static", filename="jquery-1.9.1.min.js") }}></script>
+        <script src={{ url_for("static", filename="chatbox.js", v="1.2") }}></script>
+
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/chatbox.css', v='1.5') }}"> 
+    </head>
+    <body>
+        <div class="chatbox-btn"></div>
+
+        <div class="chatbox">
+            <div class="chatbox-exit"></div>
+            <iframe src="https://lingbot.lingtelli.com/renda"></iframe>
+        </div>
+    </body>
+</html>

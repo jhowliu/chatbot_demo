@@ -13,6 +13,23 @@ def home():
     return render_template('index.html',
                            title='chatbot demo')
 
+@app.route('/<app_id>/setting')
+def setting(app_id):
+    if not 'id' in session:
+        return "Not Found"
+
+    return render_template('settings.html', title='Setting')
+
+
+@app.route('/<app_id>')
+def chatbot(app_id):
+    session['id'] = id_generator(size=20)
+    session['app_id'] = app_id
+    print "new session = {}".format(session['id'])
+    print "new app_id = {}".format(session['app_id'])
+
+    return render_template('chatbot.html', title='LingBot')
+
 @app.route('/test', methods=['GET'])
 def test():
     session_id = session['id']
@@ -25,9 +42,14 @@ def test():
 @app.route('/foo', methods=['POST'])
 def foo():
     session_id = session['id']
+    app_id = session['app_id']
     raw_text = request.form['raw_text']
+
     print "client with {}".format(session_id)
-    json_object = get_result_with_text(raw_text, session_id)
+
+    json_object = get_result_with_text(raw_text, session_id, app_id)
+
+    print json_object
 
     return json_object
 
@@ -49,7 +71,7 @@ def fb():
 
     session_id = sender_list[sender_id]
 
-    json_text = get_result_with_text(raw_text, session_id)
+    json_text = get_result_with_text(raw_text, session_id, 'renda')
 
     json_object = json.loads(json_text)
 
@@ -64,8 +86,8 @@ def fb():
 
         # get schedule when task is done if request schedule info. (need talk claude change his flow)
         if 'task' in json_object and json_object['task']['TaskName'] == 'HSRScheduleInfo':
-            url = get_schedule_with_data(json.dumps(json_object['task']), session_id)
-            json_object['dialogueReply'] = url
+            result = get_schedule_with_data(json.dumps(json_object['task']), session_id)
+            json_object['dialogueReply'] = result
             return json.dumps(json_object)
 
     return json_text
@@ -76,7 +98,10 @@ def get_schedule():
     post_data = request.form['data']
 
     response = get_schedule_with_data(post_data, session_id)
+    print(response)
+    #return ('None', 200) if response is None else response
+    return json.dumps(response) # return the json object
 
-    return ('None', 200) if response is None else response
+
 
 app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'

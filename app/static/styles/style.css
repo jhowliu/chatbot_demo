@@ -1,16 +1,33 @@
 .navbar-brand {
     text-align: center;
-    height: 60px;
+    height: 50px;
     float: none;
-    font-size: 24px;
-    line-height: 60px;
+    font-size: 20px;
+    line-height: 50px;
     padding: 0px;
 }
 
+.wrap {
+    max-height: 400px;
+    max-width: 320px;
+    padding: 0;
+    overflow: auto;
+}
+
 .input-group {
+    position: relative;
+}
+
+.input-group #speak-button {
+    width: 80px; 
+}
+
+.footer {
     position: absolute;
+    border-radius: 5px;
     bottom: 0px;
     left: 0px;
+    background: white;
 }
 
 .btn-lg {

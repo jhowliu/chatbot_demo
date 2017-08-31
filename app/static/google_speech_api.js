@@ -8,23 +8,25 @@ if ('webkitSpeechRecognition' in window) {
     recognition.continuous = false;
     recognition.interimResults = false;
 
+    speak_btn = $("#speak-button")[0];
+
     recognition.onstart = function() {
-	$("#start_button")[0].innerText = "Stop"
-        recognizing = true; };
+        $("#speak-button")[0].innerText="Stop";
+        recognizing = true; 
+    };
 
     recognition.onerror = function(event) {
-        console.log("Dictate error");
-        console.log(event.error);
+        console.log("dictate error, reason: " + event.error);
     };
 
     recognition.onend = function() {
-	$("#start_button")[0].innerText = "Talk"
+        $("#speak-button")[0].innerText="Speak";
         recognizing = false;
     };
 
     recognition.onresult = function(event) {
-        console.log(event)
         var interim_transcript = '';
+
         for (var i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
                 final_transcript += event.results[i][0].transcript;
@@ -33,13 +35,11 @@ if ('webkitSpeechRecognition' in window) {
 
         final_transcript = capitalize(final_transcript);
 
-	add_string_in_tags("p", "你說: " + final_transcript);
+        $("#text-field").val(final_transcript);
+
+        Chat.do_add_message(final_transcript);
 
         recognition.stop();
-
-	ask_question(final_transcript)
-
-
     };
 }
 
@@ -52,11 +52,12 @@ function startDictation(event) {
         recognition.stop();
         return;
     }
+
     final_transcript = '';
     recognition.lang = 'cmn-Hant-TW';
     recognition.start();
 }
-
+/*
 function ask_question(raw_text) {
     $.post( '/foo', {"raw_text" : final_transcript}, function(response) {  
 	console.log(response);
@@ -71,6 +72,7 @@ function ask_question(raw_text) {
             get_schedule(response["task"]);
             return recognition.stop();
         }
+
         startDictation(event);
     })
 }
@@ -83,6 +85,4 @@ function get_schedule(data) {
     });
 }
 
-function add_string_in_tags(tag_name, content) {
-    return $(tag_name).append("<div> " + content + " </div>")
-}
+*/

@@ -4,15 +4,18 @@ import requests, json
 import random, string
 import time
 
+from lib.parser import parse_schedule_time
+
 schedule_url = "http://122.146.85.107/abc/THRS/thsr.php"
-url = "http://192.168.10.108:3123/dialogue_control"
+url = "http://192.168.10.108:3123/new_dialogue_control"
 
 
 # get dialogue result
-def get_result_with_text(raw_text, session_id):
+def get_result_with_text(raw_text, session_id, app_id):
     payload = {
-        'q' : raw_text,
-        'session': session_id
+        'q': raw_text,
+        'session': session_id,
+        'appid': app_id
     }
 
     while True:
@@ -25,7 +28,11 @@ def get_result_with_text(raw_text, session_id):
             time.sleep(5)
             continue
 
-    print resp.text # dictionary
+    if resp.status_code == 500:
+        print("ERROR OCCUR")
+        print resp.text # dictionary
+        # 這裡應該Claude需要處理，而不是給我一個Internal Error
+        return '{ "dialogueReply": "我不明白您的意思 :(" }'
 
     return resp.text
 
@@ -72,9 +79,8 @@ def get_schedule_with_data(data, session_id):
 
     resp = requests.get(schedule_url, params=payload)
 
-    print resp.status_code
-    print resp.url
+    obj=parse_schedule_time(resp.text)
 
-
-    return resp.url
+    return json.loads(obj)
+    #return resp.url
 

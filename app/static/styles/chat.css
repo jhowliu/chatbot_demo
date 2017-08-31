@@ -4,57 +4,108 @@ ul {
     padding: 0; 
 }
 
-ul li {
-    border-radius: 10px;
-    clear: both;
-    display:inline-block;
+div .message {
+    position: relative;
+    display: inline-block;
+    width: 100%;
     font-size: 18px;
-    font-family: Helvetica, Arial, sans-serif;
-    margin: 5px 15px 5px 15px;
-    padding: 12px;
+    margin: 5px 0px;
+}
+
+
+.message.right {
+    text-align: right;
+}
+
+.message.left {
+    text-align: left;
+}
+
+.message .message-time {
+    margin-left: 30px;
+    margin-right: 30px;
+    font-size: 14px;
 }
 
 .conversation {
     position: absolute;
     overflow: auto;
-    bottom: 20px;
+    padding-bottom: 10px;
+    bottom: 40px;
     left: 0px;
-    top: 60px;
+    top: 50px;
+    width:100%;
     border-top: 2px solid gray;
 }
 
-.user {
-    background: #0084ff;
-    color: #fff;
-    float: right;
+.content {
+    word-wrap: break-word;
+    display: inline-block;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: left;
+    margin: 5px;
+    max-width: 320px;
+    max-height: 450px;
 }
 
-.bot {
+.content #chat-iframe {
+    height: 1200px;
+    width: 800px;
+    border: 0;
+
+    -ms-transform: scale(0.4);
+    -moz-transform: scale(0.4);
+    -o-transform: scale(0.4);
+    -webkit-transform: scale(0.4);
+    transform: scale(0.4);
+
+    -ms-transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+
+    transform-origin: 0 0;
+}
+
+.content.user {
+    background: #0084ff;
+    color: #fff;
+    margin-right: 25px;
+    min-height: 45px;
+    min-width: 35px;
+}
+
+.content.bot {
     background: #eee;
-    float: left;
+    margin-left: 25px;
+    min-height: 45px;
+    min-width: 35px;
 }
 
 .arrow.right:before {
-    position: absolute;
+    border: 10px solid;
+    border-color: #0084ff transparent transparent #0084ff;
     content: ' ';
+    position: absolute;
     width: 0;
     height: 0;
     left: auto;
     bottom: auto;
-    right: -5;
-    border: 15px solid;
-    border-color: transparent transparent transparent #0084ff;
+    margin-top: 5px;
+    right: 5px; 
 }
 
 .arrow.left:before {
-    position: absolute;
+    border: 10px solid;
+    border-color: #eee #eee transparent transparent;
     content: ' ';
+    position: absolute;
     width: 0;
     height: 0;
-    left: auto;
+    left: 0;
     bottom: auto;
     right: auto;
-    left: -5;
-    border: 15px solid;
-    border-color: transparent #eee transparent transparent;
+    margin-top: 5px;
+    left: 5px;
 }
