@@ -12,17 +12,17 @@ var Chat = {
         }
 
         if (type == "obj") {
-            msg = "<div class='wrap'><table class='table' id='schedule'>" + 
+            msg = "<div class='wrap'><table class='table' id='schedule'>" +
                   "<thead><th>出發時間</th><th>抵達時間</th></thead>" +
                   Chat.create_table(msg) + "</table></div>"
         }
 
-        var html = "<li class='message left'>" + 
+        var html = "<li class='message left'>" +
                    "<div class='content bot arrow left'>" + msg + "</div>" +
                    "<div class='message-time'>" + time + "</div></li>"
 
         if (role == "user") {
-            html = "<li class='message right'>" + 
+            html = "<li class='message right'>" +
                    "<div class='content user arrow right'>" + msg + "</div>" +
                    "<div class='message-time'>" + time + "</div></li>"
 
@@ -30,10 +30,18 @@ var Chat = {
 
         $(message_list).append(html);
         // scroll to the bottom
-        console.log(conversation.scrollHeight)
         conversation.scrollTop = conversation.scrollHeight;
     },
 
+    // play the audio files
+    play_audio: function(audioName, callback) {
+        var speaker = $('#speaker')[0];
+        speaker.pause();
+        speaker.src = `/static/audio/${audioName}`
+        speaker.play();
+    },
+
+    // user input text
     do_add_message: function(event) {
         var text = Utils.escape_html($("#text-field").val());
 
@@ -48,37 +56,36 @@ var Chat = {
 
         $("#text-field").val("");
     },
-
+    // call the backend dialouge api
     ask_question: function(text, callback) {
         $.post('/foo', { "raw_text": text }, function(resp) {
-
+          
             if (resp == null) {
                 callback("我沒聽清楚，請再說一遍。");
             }
-
-            resp = JSON.parse(resp);
 
             if (resp['task'] != null && resp['dialogue_state'] == 'completed') {
                 console.log("Conversation Completed");
 
                 Chat.request_schedule(resp["task"], function(url) {
-                    callback(url, "obj"); 
+                    callback(url, "obj");
                 });
             }
 
+            Chat.play_audio(resp.audio_file_name);
             callback(resp["dialogueReply"], "str");
         });
     },
 
     init_dialogue: function(callback) {
         $.post('/init', {}, function(resp) {
-            
+
             if (resp == null) {
                 callback("我沒聽清楚，請再說一遍。");
             }
 
             resp = JSON.parse(resp);
-            
+
             callback(resp["dialogueReply"], "str");
         });
     },
@@ -100,7 +107,7 @@ var Chat = {
             row.append(
                 $('<td></td>').text(item.start),
                 $('<td></td>').text(item.arrival)
-            ) 
+            )
             body.append(row);
         });
 
@@ -118,7 +125,7 @@ var Chat = {
             }
         });
 
-
+        // speak the first message
         $("#speaker")[0].play();
 
         $("#text-field").keypress(function(e) {
@@ -126,11 +133,10 @@ var Chat = {
 
             if (e.keyCode === 13 && text != "") {
                 Chat.do_add_message();
-            } 
+            }
         });
 
         $("#send-button").click(Chat.do_add_message);
-
         $("#speak-button").click(startDictation);
     }
 }

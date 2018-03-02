@@ -1,9 +1,12 @@
 # -*- coding=utf-8 -*-
-from flask import render_template, request, redirect, session
-from app.model import *
+from flask import render_template, request, session, jsonify
+from app.model import get_result_with_text, id_generator, initial
 from app import app
 
+import json
+
 session_id = ""
+
 
 @app.route('/')
 @app.route('/index')
@@ -13,9 +16,10 @@ def home():
     return render_template('index.html',
                            title='chatbot demo')
 
+
 @app.route('/<app_id>/setting')
 def setting(app_id):
-    if not 'id' in session:
+    if 'id' not in session:
         return "Not Found"
 
     return render_template('settings.html', title='Setting')
@@ -30,6 +34,7 @@ def chatbot(app_id):
 
     return render_template('chatbot.html', title='LingBot')
 
+
 @app.route('/<app_id>/<id_no>/<user>/<service_type>/<date>')
 def demo(app_id, id_no, user, service_type, date):
     session['app_id'] = app_id
@@ -41,14 +46,16 @@ def demo(app_id, id_no, user, service_type, date):
 
     return render_template('chatbot.html', title='Demo')
 
+
 @app.route('/test', methods=['GET'])
 def test():
     session_id = session['id']
     raw_text = request.args.get('text')
     print "client with {}".format(session_id)
-    json_object =  get_result_with_text(raw_text, session_id)
+    json_object, audio_file_name = get_result_with_text(raw_text, session_id)
 
     return json_object
+
 
 @app.route('/init', methods=['POST'])
 def init():
@@ -70,20 +77,24 @@ def init():
 
 @app.route('/foo', methods=['POST'])
 def foo():
-    session_id = session['id']
     app_id = session['app_id']
+    session_id = session['id']
     raw_text = request.form['raw_text']
 
     print "client with {}".format(session_id)
 
-    json_object = get_result_with_text(raw_text, session_id, app_id)
+    json_object, audio_file_name = \
+        get_result_with_text(raw_text, session_id, app_id)
+    json_object = json.loads(json_object)
+    json_object['audio_file_name'] = audio_file_name
 
-    print json_object
+    return jsonify(json_object)
 
-    return json_object
 
 # store their id and session_id
 sender_list = {}
+
+
 @app.route('/fb-bot', methods=['POST'])
 def fb():
     global sender_list
@@ -92,7 +103,6 @@ def fb():
     raw_text = request.form['raw_text']
 
     print sender_id, raw_text
-
     print sender_list
 
     if sender_id not in sender_list:
@@ -120,6 +130,7 @@ def fb():
             return json.dumps(json_object)
 
     return json_text
+
 
 @app.route('/get_schedule', methods=['POST'])
 def get_schedule():

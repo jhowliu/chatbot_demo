@@ -8,14 +8,14 @@
         <script src={{ url_for("static", filename="chat.js", v="2.5.1") }}></script>
         <script src={{ url_for("static", filename="google_speech_api.js") }}></script>
 
-        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/bootstrap/bootstrap.min.css') }}"> 
-        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/chat.css', v='1.1') }}"> 
-        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/style.css', v='1.4') }}"> 
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/bootstrap/bootstrap.min.css') }}">
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/chat.css', v='1.1') }}">
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/style.css', v='1.4') }}">
     </head>
 
     <body>
         <audio id="speaker">
-            <source src="/static/audio/4f22aacf-ef15-4049-b182-3847185ae26a.mp3" type="audio/mpeg"></source>
+            <source src="/static/audio/welcome.mp3" type="audio/mpeg"></source>
         </audio>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
