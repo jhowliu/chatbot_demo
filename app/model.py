@@ -36,16 +36,26 @@ def request_data(url, payload):
         print(resp.text)  # dictionary
         # 這裡應該Claude需要處理，而不是給我一個Internal Error
         reply = '{"dialogueReply":"對不起，我不明白您的意思。"}'
+    else:
+        reply = find_top_candidate(reply)
 
     audio_file_name = create_audio_file(reply)
 
     return reply, audio_file_name
 
 
+def find_top_candidate(reply):
+    reply = json.loads(reply)
+    if 'type' in reply and reply['type'] == 'list':
+        reply['dialogueReply'] = reply['dialogueReply'][0]
+
+    return json.dumps(reply)
+
+
 def create_audio_file(reply):
     audio_file_name = None
     reply = json.loads(reply)
-
+    
     if 'dialogueReply' in reply:
         audio_file_name = speech(reply['dialogueReply'])
 

@@ -1,8 +1,9 @@
 # -*- coding=utf-8 -*-
-from flask import render_template, request, session, jsonify
+from flask import render_template, request, session, jsonify, abort
 from app.model import get_result_with_text, id_generator, initial
 from app import app
 
+import os
 import json
 
 session_id = ""
@@ -15,6 +16,16 @@ def home():
     print "new session = {}".format(session['id'])
     return render_template('index.html',
                            title='chatbot demo')
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return None
+
+
+@app.route('/underscore-min.map')
+def map_files():
+    return ('', 204)
 
 
 @app.route('/<app_id>/setting')
