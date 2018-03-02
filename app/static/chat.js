@@ -70,6 +70,19 @@ var Chat = {
         });
     },
 
+    init_dialogue: function(callback) {
+        $.post('/init', {}, function(resp) {
+            
+            if (resp == null) {
+                callback("我沒聽清楚，請再說一遍。");
+            }
+
+            resp = JSON.parse(resp);
+            
+            callback(resp["dialogueReply"], "str");
+        });
+    },
+
 
     request_schedule: function(payload, callback) {
         $.post( '/get_schedule', { "data": JSON.stringify(payload) }, function(obj) {
@@ -95,7 +108,18 @@ var Chat = {
     },
 
     load: function() {
-        Chat.add_message("您好，請問您需要什麼服務？", "bot", "str");
+
+        Chat.init_dialogue(function(resp) {
+            if (resp == null) {
+                Chat.add_message("您好，請問您需要什麼服務？", "bot", "str");
+            }
+            else {
+                Chat.add_message(resp, "bot", "str");
+            }
+        });
+
+
+        $("#speaker")[0].play();
 
         $("#text-field").keypress(function(e) {
             var text = Utils.escape_html($("#text-field").val())

@@ -5,7 +5,7 @@
         <title>{{ title }}</title>
         <script src={{ url_for("static", filename="jquery-1.9.1.min.js") }}></script>
         <script src={{ url_for("static", filename="utils.js", v="1.0") }}></script>
-        <script src={{ url_for("static", filename="chat.js", v="1.8") }}></script>
+        <script src={{ url_for("static", filename="chat.js", v="2.5.1") }}></script>
         <script src={{ url_for("static", filename="google_speech_api.js") }}></script>
 
         <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/bootstrap/bootstrap.min.css') }}"> 
@@ -14,6 +14,9 @@
     </head>
 
     <body>
+        <audio id="speaker">
+            <source src="/static/audio/4f22aacf-ef15-4049-b182-3847185ae26a.mp3" type="audio/mpeg"></source>
+        </audio>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-brand">LingBot</div>

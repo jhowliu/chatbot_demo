@@ -30,14 +30,43 @@ def chatbot(app_id):
 
     return render_template('chatbot.html', title='LingBot')
 
+@app.route('/<app_id>/<id_no>/<user>/<service_type>/<date>')
+def demo(app_id, id_no, user, service_type, date):
+    session['app_id'] = app_id
+    session['user'] = user
+    session['id_no'] = id_no
+    session['date'] = date
+    session['id'] = id_generator(size=20)
+    session['service_type'] = service_type
+
+    return render_template('chatbot.html', title='Demo')
+
 @app.route('/test', methods=['GET'])
 def test():
     session_id = session['id']
     raw_text = request.args.get('text')
     print "client with {}".format(session_id)
-    json_object = get_result_with_text(raw_text, session_id)
+    json_object =  get_result_with_text(raw_text, session_id)
 
     return json_object
+
+@app.route('/init', methods=['POST'])
+def init():
+    app_id = session['app_id']
+
+    if app_id != "sunshine":
+        return json.dumps({"dialogueReply": None})
+
+    user = session['user']
+    date = session['date']
+    id_no = session['id_no']
+    session_id = session['id']
+    service_type = session['service_type']
+
+    json_object = initial(session_id, app_id, id_no, user, service_type, date)
+
+    return json_object
+
 
 @app.route('/foo', methods=['POST'])
 def foo():
@@ -86,8 +115,8 @@ def fb():
 
         # get schedule when task is done if request schedule info. (need talk claude change his flow)
         if 'task' in json_object and json_object['task']['TaskName'] == 'HSRScheduleInfo':
-            result = get_schedule_with_data(json.dumps(json_object['task']), session_id)
-            json_object['dialogueReply'] = result
+            _, url = get_schedule_with_data(json.dumps(json_object['task']), session_id)
+            json_object['dialogueReply'] = url
             return json.dumps(json_object)
 
     return json_text
@@ -97,7 +126,7 @@ def get_schedule():
     session_id = session['id']
     post_data = request.form['data']
 
-    response = get_schedule_with_data(post_data, session_id)
+    response, _ = get_schedule_with_data(post_data, session_id)
     print(response)
     #return ('None', 200) if response is None else response
     return json.dumps(response) # return the json object

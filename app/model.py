@@ -5,19 +5,13 @@ import random, string
 import time
 
 from lib.parser import parse_schedule_time
+from lib.tts import speech
 
 schedule_url = "http://122.146.85.107/abc/THRS/thsr.php"
-url = "http://192.168.10.108:3123/new_dialogue_control"
+url = "http://192.168.10.108:3124/new_dialogue_control"
 
 
-# get dialogue result
-def get_result_with_text(raw_text, session_id, app_id):
-    payload = {
-        'q': raw_text,
-        'session': session_id,
-        'appid': app_id
-    }
-
+def request_data(url, payload):
     while True:
         try:
             resp = requests.get(url, params=payload, headers={'Connection': 'close'})
@@ -35,6 +29,33 @@ def get_result_with_text(raw_text, session_id, app_id):
         return '{ "dialogueReply": "我不明白您的意思 :(" }'
 
     return resp.text
+
+
+def initial(session_id, app_id, id_no, user, service, date):
+    payload = {
+        'session': session_id,
+        'appid': app_id,
+        'IDNo': id_no,
+        'PersonName': user,
+        'ServiceType': service,
+        'Date': date
+    }
+
+    resp_text = request_data(url, payload=payload)
+
+    return resp_text
+
+# get dialogue result
+def get_result_with_text(raw_text, session_id, app_id):
+    payload = {
+        'q': raw_text,
+        'session': session_id,
+        'appid': app_id,
+    }
+
+    resp_text = request_data(url, payload=payload)
+
+    return resp_text
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -81,6 +102,5 @@ def get_schedule_with_data(data, session_id):
 
     obj=parse_schedule_time(resp.text)
 
-    return json.loads(obj)
-    #return resp.url
+    return json.loads(obj), resp.url
 
